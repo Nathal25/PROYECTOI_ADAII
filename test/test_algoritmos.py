@@ -1,0 +1,51 @@
+import os
+import unittest
+from algoritmos.voraz import rocV
+from utils.escritura import escribir_salida
+
+class TestIntegracionVoraz(unittest.TestCase):
+
+    def test_voraz_integration(self):
+        entrada = "Prueba1.txt"          # archivo de entrada
+        salida = "Resultado_test.txt"    # archivo de salida temporal
+
+        # Ejecutar el algoritmo voraz
+        asignaciones, costo = rocV(entrada)
+
+        # Escribir la salida en archivo
+        escribir_salida(salida, asignaciones, costo)
+
+        # Verificar que el archivo se haya creado
+        self.assertTrue(os.path.exists(salida))
+
+        # Leer contenido del archivo de salida
+        with open(salida, "r") as f:
+            lineas = [line.strip() for line in f.readlines()]
+
+        # 1) La primera línea debe ser el costo
+        try:
+            float(lineas[0])
+        except ValueError:
+            self.fail("La primera línea de salida no es un número válido de costo.")
+
+        # 2) Verificar que cada bloque de estudiante tenga consistencia
+        i = 1
+        while i < len(lineas):
+            if "," not in lineas[i]:
+                self.fail(f"Línea inesperada en salida: {lineas[i]}")
+
+            estudiante, num = lineas[i].split(",")
+            num = int(num)
+
+            # Deben venir 'num' líneas con materias después de esta
+            materias = lineas[i+1:i+1+num]
+            self.assertEqual(len(materias), num, f"El estudiante {estudiante} no tiene el número correcto de materias.")
+
+            i += 1 + num  # saltar al siguiente estudiante
+
+        # Limpieza (opcional)
+        if os.path.exists(salida):
+            os.remove(salida)
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,12 +1,14 @@
-
 import tkinter as tk
 from tkinter import filedialog, ttk, messagebox
+from algoritmos.voraz import rocV
+from utils.escritura import escribir_salida
+import os
 
 class ProyectoADAApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Proyecto ADA - Asignación de Materias")
-        self.root.geometry("600x400")
+        self.root.geometry("700x500")
 
         # ---- Frame superior con controles ----
         frame_top = tk.Frame(root, pady=10)
@@ -21,7 +23,7 @@ class ProyectoADAApp:
         self.algoritmo_var = tk.StringVar()
         self.combo_algoritmo = ttk.Combobox(
             frame_top, textvariable=self.algoritmo_var,
-            values=["Fuerza Bruta", "Greedy", "Programación Dinámica"],
+            values=["Greedy (Voraz)", "Fuerza Bruta", "Programación Dinámica"],
             state="readonly", width=25
         )
         self.combo_algoritmo.current(0)
@@ -73,26 +75,33 @@ class ProyectoADAApp:
             return
 
         algoritmo = self.algoritmo_var.get()
-        entrada = self.txt_entrada.get(1.0, tk.END).strip()
-
-        # Aquí conectas con tus funciones de resolución
-        if algoritmo == "Fuerza Bruta":
-            resultado = ">> Ejecutando fuerza bruta (placeholder)"
-        elif algoritmo == "Greedy":
-            resultado = ">> Ejecutando algoritmo greedy (placeholder)"
-        elif algoritmo == "Programación Dinámica":
-            resultado = ">> Ejecutando programación dinámica (placeholder)"
-        else:
-            resultado = "Algoritmo no implementado."
-
-        # Mostrar resultados
         self.txt_salida.delete(1.0, tk.END)
-        self.txt_salida.insert(tk.END, f"Algoritmo seleccionado: {algoritmo}\n\n")
-        self.txt_salida.insert(tk.END, f"Entrada procesada:\n{entrada[:500]}...\n\n")  # muestra solo inicio
-        self.txt_salida.insert(tk.END, f"Resultado:\n{resultado}")
+
+        try:
+            if algoritmo == "Greedy (Voraz)":
+                asignaciones, costo = rocV(self.ruta_archivo)
+
+                # Crear nombre de salida
+                nombre_salida = "Resultado_" + os.path.basename(self.ruta_archivo)
+                escribir_salida(nombre_salida, asignaciones, costo)
+
+                self.txt_salida.insert(tk.END, f"✅ Algoritmo voraz ejecutado correctamente.\n\n")
+                self.txt_salida.insert(tk.END, f"Archivo de salida: {nombre_salida}\n")
+                self.txt_salida.insert(tk.END, f"Costo total: {costo:.6f}\n\n")
+                self.txt_salida.insert(tk.END, "Asignaciones:\n")
+                for est, mat in asignaciones.items():
+                    self.txt_salida.insert(tk.END, f"  {est} -> {mat}\n")
+
+            elif algoritmo == "Fuerza Bruta":
+                self.txt_salida.insert(tk.END, ">> Implementación pendiente de fuerza bruta.\n")
+
+            elif algoritmo == "Programación Dinámica":
+                self.txt_salida.insert(tk.END, ">> Implementación pendiente de programación dinámica.\n")
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Ocurrió un problema al ejecutar el algoritmo:\n{e}")
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = ProyectoADAApp(root)
     root.mainloop()
-
