@@ -6,8 +6,6 @@ def leer_entrada(archivo_entrada: str):
     """
     with open(archivo_entrada, "r") as f:
         lineas = [line.strip() for line in f.readlines()]
-
-
     k = int(lineas[0])  # número de materias
     materias = {}
     idx = 1
