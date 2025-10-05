@@ -1,0 +1,33 @@
+name: Ejecutar tests automáticos
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Clonar el código del repo
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      # 2️⃣ Configurar Python
+      - name: Configurar Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # 3️⃣ Instalar dependencias
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # 4️⃣ Ejecutar tests
+      - name: Ejecutar pruebas con pytest
+        run: |
+          pytest -v
