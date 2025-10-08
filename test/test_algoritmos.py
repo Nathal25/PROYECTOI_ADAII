@@ -6,20 +6,20 @@ from utils.escritura import escribir_salida
 class TestIntegracionVoraz(unittest.TestCase):
 
     def test_voraz_integration(self):
-        entrada = "Prueba1.txt"          # archivo de entrada
-        salida = "Resultado_test.txt"    # archivo de salida temporal
+        entrada = "pruebas/Prueba1.txt"          # archivo de entrada
+        salida = "Resultados/Resultado_test.txt"    # archivo de salida temporal
 
         # Ejecutar el algoritmo voraz
         asignaciones, costo = rocV(entrada)
 
-        # Escribir la salida en archivo
-        escribir_salida(salida, asignaciones, costo)
+        # Escribir la salida en archivo (la función devuelve la ruta final usada)
+        salida_generada = escribir_salida(salida, asignaciones, costo)
 
-        # Verificar que el archivo se haya creado
-        self.assertTrue(os.path.exists(salida))
+        # Verificar que el archivo se haya creado (usar la ruta devuelta)
+        self.assertTrue(os.path.exists(salida_generada))
 
         # Leer contenido del archivo de salida
-        with open(salida, "r") as f:
+        with open(salida_generada, "r", encoding="utf-8") as f:
             lineas = [line.strip() for line in f.readlines()]
 
         # 1) La primera línea debe ser el costo
@@ -44,8 +44,8 @@ class TestIntegracionVoraz(unittest.TestCase):
             i += 1 + num  # saltar al siguiente estudiante
 
         # Limpieza (opcional)
-        if os.path.exists(salida):
-            os.remove(salida)
+        if os.path.exists(salida_generada):
+            os.remove(salida_generada)
 
 if __name__ == "__main__":
     unittest.main()

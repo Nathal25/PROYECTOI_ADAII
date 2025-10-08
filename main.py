@@ -81,12 +81,12 @@ class ProyectoADAApp:
             if algoritmo == "Greedy (Voraz)":
                 asignaciones, costo = rocV(self.ruta_archivo)
 
-                # Crear nombre de salida
+                # Crear nombre de salida y guardarlo en la carpeta 'Resultados'
                 nombre_salida = "Resultado_" + os.path.basename(self.ruta_archivo)
-                escribir_salida(nombre_salida, asignaciones, costo)
+                ruta_generada = escribir_salida(nombre_salida, asignaciones, costo, carpeta_salida="Resultados")
 
                 self.txt_salida.insert(tk.END, f"✅ Algoritmo voraz ejecutado correctamente.\n\n")
-                self.txt_salida.insert(tk.END, f"Archivo de salida: {nombre_salida}\n")
+                self.txt_salida.insert(tk.END, f"Archivo de salida: {ruta_generada}\n")
                 self.txt_salida.insert(tk.END, f"Costo total: {costo:.6f}\n\n")
                 self.txt_salida.insert(tk.END, "Asignaciones:\n")
                 for est, mat in asignaciones.items():
