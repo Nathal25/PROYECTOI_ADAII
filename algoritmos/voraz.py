@@ -2,7 +2,7 @@ from utils.lectura import leer_entrada
 import random
 
 
-def rocV(archivo_entrada: str, use_local_search: bool = False, max_iter: int = 1000):
+def rocV(archivo_entrada: str, use_local_search: bool = True, max_iter: int = 500):
     """
     Algoritmo voraz para la asignación de materias.
     Compatible con la salida de `leer_entrada` (estudiantes: lista de dicts
@@ -37,9 +37,8 @@ def rocV(archivo_entrada: str, use_local_search: bool = False, max_iter: int = 1
             asignaciones[codigo].append((m, p))
             cupos[m] = cupos.get(m, 0) - 1
 
-    # 6. Opcional: mejora por búsqueda local (swap y relocate).
-    # Por defecto stay voraz (use_local_search=False). Pasa use_local_search=True
-    # si quieres ejecutar la fase de búsqueda local.
+    # 6. Mejora opcional (búsqueda local): por defecto activada con pocas iteraciones
+    # (es una mejora ligera que mantiene el enfoque voraz pero corrige casos puntuales).
     if use_local_search:
         asignaciones = busqueda_local(asignaciones, materias, estudiantes, max_iter=max_iter)
 
