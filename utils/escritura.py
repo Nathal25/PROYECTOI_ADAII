@@ -40,6 +40,13 @@ def escribir_salida(nombre_archivo: str, asignaciones: dict, costo: float, carpe
             materias_asignadas = asignaciones[estudiante]
             f.write(f"{estudiante},{len(materias_asignadas)}\n")
 
-            for materia, _ in materias_asignadas:
+            for entry in materias_asignadas:
+                # soportar dos formatos:
+                # - [(materia, prioridad), ...]
+                # - ['materia', 'materia', ...]
+                if isinstance(entry, (list, tuple)) and len(entry) >= 1:
+                    materia = entry[0]
+                else:
+                    materia = entry
                 f.write(f"{materia}\n")
     return nombre_archivo

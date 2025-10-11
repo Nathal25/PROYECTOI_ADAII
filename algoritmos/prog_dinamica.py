@@ -104,23 +104,26 @@ def rocPD(archivo_entrada: str):
 
     # Ejecutar DP desde el primer estudiante con todos los cupos disponibles
     costo_total, asignaciones_tuple = dp(0, cupos_iniciales)
-    print(asignaciones_tuple)
-    asignaciones = [list(a) for a in asignaciones_tuple]
+    # asignaciones_tuple contiene para cada estudiante una tupla con los códigos de materias
+    # Normalizar a lista de listas y convertir cada código a (materia, prioridad)
+    asignaciones_list = []
+    for i, a in enumerate(asignaciones_tuple):
+        codigo_est = estudiantes[i]['codigo']
+        # a es una tupla de códigos de materia, convertir a lista de (materia, prioridad)
+        asign_for_student = []
+        for m in a:
+            # obtener prioridad desde la tabla 'prioridades'
+            p = prioridades.get(codigo_est, {}).get(m, None)
+            # si no hay prioridad (caso extraño), usamos 0 como fallback
+            if p is None:
+                p = 0
+            asign_for_student.append((m, p))
+        asignaciones_list.append(asign_for_student)
+
+    # convertir a diccionario {codigo_estudiante: [(materia, prioridad), ...]}
+    asignaciones_dict = {estudiantes[i]['codigo']: asignaciones_list[i] for i in range(len(estudiantes))}
     insat_promedio = costo_total / r if costo_total < math.inf else math.inf
 
-    # ------------------------------------------------------------
-    # IMPRESIÓN DE RESULTADOS
-    # ------------------------------------------------------------
-    print("\n========== RESULTADO ÓPTIMO ==========")
+    return asignaciones_dict, insat_promedio
 
-    print(f"Insatisfacción promedio: {insat_promedio:.6f}\n")
-
-    for i, est in enumerate(estudiantes):
-        print(f"Estudiante {est['codigo']}: {asignaciones[i]}")
-
-    print("======================================\n")
-
-    return asignaciones, insat_promedio
-
-
-rocPD("Prueba24.txt")
+#rocPD("Prueba24.txt")
