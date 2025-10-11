@@ -3,7 +3,6 @@ from itertools import combinations
 from functools import lru_cache
 import math
 
-
 def calcular_insatisfaccion_individual(total_solicitadas, asignadas, prioridades, materias_asignadas):
     """
     Calcula la insatisfacción individual de un estudiante según la fórmula dada.
