@@ -1,6 +1,5 @@
 from utils.lectura import leer_entrada
 from itertools import combinations
-from functools import lru_cache
 import math
 
 def calcular_insatisfaccion_individual(total_solicitadas, asignadas, prioridades, materias_asignadas):
@@ -13,12 +12,10 @@ def calcular_insatisfaccion_individual(total_solicitadas, asignadas, prioridades
     suma_prioridades_no_asig = sum(prioridades[m] for m in materias_no_asignadas)
     return (1.0 - (asignadas / total_solicitadas)) * (suma_prioridades_no_asig / ((3 * total_solicitadas) - 1))
 
-
 def rocPD(archivo_entrada: str):
     """
     Asigna cupos minimizando la insatisfacción total usando Programación Dinámica.
     """
-
     # Leer archivo
     materias_dict, estudiantes = leer_entrada(archivo_entrada)
 
@@ -45,13 +42,20 @@ def rocPD(archivo_entrada: str):
     # PROGRAMACIÓN DINÁMICA MEMOIZADA
     # ------------------------------------------------------------
 
-    @lru_cache(maxsize=None)
+    DP = {} #estructura de almacenamiento
     def dp(idx, cupos): #para recursion
         """
         Devuelve una tupla (costo mínimo desde este estudiante, asignaciones óptimas restantes).
         - idx: índice del estudiante actual
         - cupos: tupla con los cupos restantes de cada materia
         """
+        estado = (idx, cupos)
+        if estado in DP:
+            return DP[estado] #reutilizar resultados guardados
+        
+        if idx == r:
+            DP[estado] = (0.0, ())
+            return DP[estado]
         if idx == r: #indice por estudiante a analizar
             return 0.0, ()
 
@@ -97,10 +101,9 @@ def rocPD(archivo_entrada: str):
                     best_assignments = (materias_asignadas,) + asign_restante
 
         # Si no se pudo asignar nada (muy raro), devolver costo infinito
-        if best_assignments is None:
-            return math.inf, ()
+        DP[estado] = (best_cost, best_assignments)
+        return DP[estado]
 
-        return best_cost, best_assignments
 
     # Ejecutar DP desde el primer estudiante con todos los cupos disponibles
     costo_total, asignaciones_tuple = dp(0, cupos_iniciales)
@@ -124,6 +127,7 @@ def rocPD(archivo_entrada: str):
     asignaciones_dict = {estudiantes[i]['codigo']: asignaciones_list[i] for i in range(len(estudiantes))}
     insat_promedio = costo_total / r if costo_total < math.inf else math.inf
 
+    # print("\n=== Tabla de subestructuras almacenadas ===")
+    # for estado, valor in DP.items():
+    #     print(f"Estado {estado} -> Costo: {valor[0]:.4f}, Asignaciones parciales: {valor[1]}")
     return asignaciones_dict, insat_promedio
-
-#rocPD("Prueba24.txt")
