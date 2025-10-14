@@ -26,7 +26,7 @@ class ProyectoADAApp:
         self.algoritmo_var = tk.StringVar()
         self.combo_algoritmo = ttk.Combobox(
             frame_top, textvariable=self.algoritmo_var,
-            values=["Greedy (Voraz)", "Fuerza Bruta", "Programación Dinámica"],
+            values=["Programación Voraz", "Fuerza Bruta", "Programación Dinámica"],
             state="readonly", width=25
         )
         self.combo_algoritmo.current(0)
@@ -42,17 +42,20 @@ class ProyectoADAApp:
         # ---- Vista horizontal ----
         frame_main = tk.Frame(root)
         frame_main.pack(fill=tk.BOTH, expand=True)
+        frame_main.columnconfigure(0, weight=1)
+        frame_main.columnconfigure(1, weight=1)
+        frame_main.rowconfigure(0, weight=1)
 
         # Entrada
         frame_entrada = tk.LabelFrame(frame_main, text="Entrada del problema")
-        frame_entrada.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
+        frame_entrada.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
         self.txt_entrada = tk.Text(frame_entrada, wrap=tk.WORD)
         self.txt_entrada.pack(fill=tk.BOTH, expand=True)
 
         # Salida
         frame_salida = tk.LabelFrame(frame_main, text="Salida del problema")
-        frame_salida.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=10, pady=10)
+        frame_salida.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
 
         self.txt_salida = tk.Text(frame_salida, wrap=tk.WORD, bg="#f4f4f4")
         self.txt_salida.pack(fill=tk.BOTH, expand=True)
