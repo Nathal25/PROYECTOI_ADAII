@@ -56,18 +56,26 @@ def rocPD(archivo_entrada: str):
         if idx == r:
             DP[estado] = (0.0, ())
             return DP[estado]
-        if idx == r: #indice por estudiante a analizar
-            return 0.0, ()
+        # if idx == r: #indice por estudiante a analizar
+        #     return 0.0, ()
 
         estudiante = estudiantes[idx]
         cod_est = estudiante['codigo']
-        materias_solicitadas = solicitudes_codigos[idx]
-        
+        materias_solicitadas = solicitudes_codigos[idx]      
         total_solicitadas = len(materias_solicitadas)
         
-        n = len(materias_solicitadas)
+        n = total_solicitadas
         best_cost = math.inf
         best_assignments = None
+
+        #calcular insatisfacción individual ..
+        insat_por_materia = {}
+        for m in materias_solicitadas:
+            insat_por_materia[m] = calcular_insatisfaccion_individual(
+            total_solicitadas, 1, prioridades[cod_est], (m,)
+        )
+        #ordenar
+        materias_ordenadas = sorted(materias_solicitadas, key=lambda x: insat_por_materia[x])
 
         # Generar todas las combinaciones posibles de asignaciones factibles (incluye opción vacía)
         for s in range(0, n + 1):
@@ -75,19 +83,27 @@ def rocPD(archivo_entrada: str):
                 cupos_list = list(cupos)
                 factible = True
 
-                for i in comb:
-                    materia = materias_solicitadas[i]
-                    pos = idx_por_materia[materia]
+                materias_asignadas = tuple(materias_ordenadas[i] for i in comb)
+                # Verificar factibilidad por cupos disponibles
+                for m in materias_asignadas:
+                    pos = idx_por_materia[m]
                     if cupos_list[pos] == 0:
                         factible = False
                         break
                     cupos_list[pos] -= 1
+                # for i in comb:
+                #     materia = materias_solicitadas[i]
+                #     pos = idx_por_materia[materia]
+                #     if cupos_list[pos] == 0:
+                #         factible = False
+                #         break
+                #     cupos_list[pos] -= 1
 
                 if not factible:
                     continue
 
                 # Materias asignadas al estudiante actual
-                materias_asignadas = tuple(materias_solicitadas[i] for i in comb)
+                #materias_asignadas = tuple(materias_solicitadas[i] for i in comb)
                 f = calcular_insatisfaccion_individual(total_solicitadas, len(materias_asignadas),
                                                       prioridades[cod_est], materias_asignadas)
 
