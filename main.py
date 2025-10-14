@@ -31,7 +31,6 @@ class ProyectoADAApp:
         )
         self.combo_algoritmo.current(0)
         self.combo_algoritmo.pack(side=tk.LEFT, padx=5)
-
     # Nota: la búsqueda local y el número de iteraciones se ejecutan siempre
     # por defecto en `rocV` (parámetros hardcodeados en el algoritmo).
 
