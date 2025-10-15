@@ -96,7 +96,7 @@ class ProyectoADAApp:
                 start = time.perf_counter()
                 # Ejecutar el algoritmo seleccionado y capturar el resultado
                 result = None
-                if algoritmo == "Greedy (Voraz)":
+                if algoritmo == "Programación Voraz":
                     # Llamar a rocV con los valores por defecto: siempre usa búsqueda local ligera
                     result = rocV(self.ruta_archivo)
                     nombre_salida = "Resultado_V_" + os.path.basename(self.ruta_archivo)
