@@ -1,6 +1,8 @@
 # Ignore all files and folders inside the 'pruebas' and 'Resultados' directories (repo root)
 /pruebas/
 /Resultados/
+.venv/
+/venv/
 
 # keep other ignore patterns
 *.log
