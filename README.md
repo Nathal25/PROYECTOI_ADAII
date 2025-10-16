@@ -53,7 +53,7 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-3. Ejecutar la aplicación (abrirá una ventana gráfica basada en Tkinter):
+3. Ejecutar la aplicación (abrirá una ventana gráfica basada en tkinter):
 
 ```powershell
 python main.py
