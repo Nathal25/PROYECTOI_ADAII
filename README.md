@@ -47,7 +47,7 @@ python -m venv venv
 venv\Scripts\activate
 ```
 
-2. Instale las dependencias de requirements.txt:
+2. Instalar las dependencias de requirements.txt:
 
 ```powershell
 pip install -r requirements.txt
