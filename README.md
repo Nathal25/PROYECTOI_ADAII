@@ -32,6 +32,49 @@ El propósito de este proyecto es aplicar diferentes técnicas de diseño de alg
 
 4. Consultar este README para detalles sobre la estructura de archivos y el objetivo general.
 
+### Ejecutar la aplicación (GUI)
+
+Requisitos básicos:
+
+- Python 3.8+ (el proyecto se probó con Python 3.13). En Windows suele incluirse la librería `tkinter` necesaria para la interfaz.
+
+Paso a paso (PowerShell):
+
+1. (Opcional) Crear y activar un entorno virtual recomendado:
+
+```powershell
+python -m venv venv
+venv\Scripts\activate
+```
+
+2. Instalar las dependencias de requirements.txt:
+
+```powershell
+pip install -r requirements.txt
+```
+
+3. Ejecutar la aplicación (abrirá una ventana gráfica basada en tkinter):
+
+```powershell
+python main.py
+```
+
+4. Usar la interfaz para cargar el archivo de entrada (por ejemplo `pruebas/Prueba1.txt`) y ejecutar el algoritmo deseado. El programa escribirá el archivo de salida (`salida.txt`) y mostrará el tiempo de ejecución en la ventana.
+
+### Ejecutar pruebas automáticas
+
+Para ejecutar la suite de tests con unittest (desde la raíz del proyecto):
+
+```powershell
+python -m unittest discover -s test -p "test_*.py" -v
+```
+
+Notas:
+
+- Si su instalación de Python no incluye `tkinter`, deberá instalarlo o usar una versión de Python que lo incluya (en Windows suele venir por defecto).
+- Los comandos anteriores están pensados para PowerShell en Windows; en otras shells (bash, cmd) la sintaxis para activar el virtualenv puede cambiar.
+
+
 ## Créditos
 
 - **Autores**: Nathalia Ortiz Granada 202372231, Nicole Narvaez Medina 202156947 
