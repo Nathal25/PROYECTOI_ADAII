@@ -62,8 +62,9 @@ def busqueda_local(asignaciones, materias, estudiantes, max_iter=1000):
       estudiantes: lista de dicts con 'codigo' y 'materias'
     Devuelve la asignación mejorada (posible la misma si no hay mejora).
     """
-    # Mapear estudiante -> set de materias solicitadas y prioritades
+    # Mapear estudiante -> set de materias solicitadas y mapa materia->prioridad
     solicitudes_map = {e['codigo']: {m for (m, _) in e['materias']} for e in estudiantes}
+    prioridad_map = {e['codigo']: {m: p for (m, p) in e['materias']} for e in estudiantes}
 
     # helper para calcular costo usando la función existente
     def costo_actual(asigs):
@@ -98,11 +99,19 @@ def busqueda_local(asignaciones, materias, estudiantes, max_iter=1000):
                 for idx_a, (ma, pa) in enumerate(current[a]):
                     for idx_b, (mb, pb) in enumerate(current[b]):
                         # only consider swap if each student requested the other's materia
-                        if (mb in solicitudes_map[a]) and (ma in solicitudes_map[b]):
-                            # apply swap
+                        # and the swap would not create a duplicate assignment
+                        cond_requested = (mb in solicitudes_map[a]) and (ma in solicitudes_map[b])
+                        cond_no_dup_a = not any(mb == m_as for (m_as, _) in current[a])
+                        cond_no_dup_b = not any(ma == m_as for (m_as, _) in current[b])
+                        if cond_requested and cond_no_dup_a and cond_no_dup_b:
+                            # apply swap; use the receiver's priority for the materia if available
                             new_asigs = {k: list(v) for k, v in current.items()}
-                            new_asigs[a][idx_a] = (mb, pb)
-                            new_asigs[b][idx_b] = (ma, pa)
+                            # priority to assign to 'a' for materia mb: prefer a's declared priority
+                            p_for_a = prioridad_map.get(a, {}).get(mb, pb)
+                            # priority to assign to 'b' for materia ma: prefer b's declared priority
+                            p_for_b = prioridad_map.get(b, {}).get(ma, pa)
+                            new_asigs[a][idx_a] = (mb, p_for_a)
+                            new_asigs[b][idx_b] = (ma, p_for_b)
                             new_cost = costo_actual(new_asigs)
                             if new_cost + 1e-12 < best_cost:
                                 current = new_asigs
@@ -133,8 +142,9 @@ def busqueda_local(asignaciones, materias, estudiantes, max_iter=1000):
                         new_asigs = {k: list(v) for k, v in current.items()}
                         # remove from a
                         del new_asigs[a][idx_a]
-                        # add to b with original priority pa
-                        new_asigs[b].append((ma, pa))
+                        # add to b with b's declared priority for ma (fallback to pa)
+                        p_for_b = prioridad_map.get(b, {}).get(ma, pa)
+                        new_asigs[b].append((ma, p_for_b))
                         new_cost = costo_actual(new_asigs)
                         if new_cost + 1e-12 < best_cost:
                             current = new_asigs
